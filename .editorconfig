@@ -12,7 +12,7 @@ root = true
 
 # Possible values - tab, space
 
-indent_style = tab
+indent_style = space
 
 # Indentation size in single-spaced characters
 
@@ -36,7 +36,7 @@ charset = utf-8
 
 # Possible values - true, false
 
-trim_trailing_whitespace = true
+trim_trailing_whitespace = false
 
 # Denotes whether file should end with a newline
 
