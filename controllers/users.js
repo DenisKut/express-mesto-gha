@@ -2,7 +2,8 @@ const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
 	User.find({})
-		.then(users => res.send({ data:users }))
+		.then(users =>
+			res.send({ data:users }))
 		.catch(error =>{
 			res.status(500)
 				.send({message: 'Ошибка выполнения запроса на сервере'});
@@ -35,7 +36,7 @@ module.exports.createUser = (req, res) => {
 	const { name, about, avatar } = req.body;
 	User.create({ name, about, avatar })
 		.then(user => {
-			res.send({ name, about, avatar })
+			res.send(user)
 		})
 		.catch(error => {
 			if(err.name === 'ValidationError') {
