@@ -19,7 +19,7 @@ module.exports.createCard = (req, res) => {
 			res.send(card);
 		})
 		.catch(error => {
-			if(err.name === 'ValidationError') {
+			if(error.name === 'ValidationError') {
 				res.status(400)
 					.send({message: 'Проверьте корректность введённых данных'});
 				} else {

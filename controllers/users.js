@@ -54,7 +54,7 @@ module.exports.updateProfileUser = (req, res) => {
   User.findOneAndUpdate(
     req.user._id,
     { name, about },
-    { new: true }
+    { new: true, runValidators: true }
   )
   .then(user => {
 		if(!user) {
@@ -80,7 +80,7 @@ module.exports.updateAvatarUser = (req, res) => {
 	User.findByIdAndUpdate(
 		req.user._id,
     { avatar },
-    { new: true }
+    { new: true, runValidators: true }
 	)
 	.then(user => {
 		if(!user) {
