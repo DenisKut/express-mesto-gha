@@ -23,6 +23,10 @@ mongoose.set('strictQuery', true);
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
+app.get('*', (req, res) => {
+	res.status(404)
+		.send({message: 'Page Not Found!'});
+})
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
