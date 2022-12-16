@@ -41,7 +41,7 @@ module.exports.deleteCard = (req, res) => {
       if (error.message === 'NotValidId') {
         res.status(404)
           .send({ message: 'Данной карточки не существует' });
-      } else if (error.name === 'ValidationError') {
+      } else if (error.name === 'CastError') {
         res.status(400)
           .send({ message: 'Проверьте корректность введённых данных' });
       } else {
@@ -57,8 +57,8 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .populate('owner', 'likes')
     .orFail(new Error('NotValidId'))
+    .populate('owner', 'likes')
     .then((card) => {
       res.status(200).send(card);
     })
@@ -66,7 +66,7 @@ module.exports.likeCard = (req, res) => {
       if (error.message === 'NotValidId') {
         res.status(404)
           .send({ message: 'Данной карточки не существует' });
-      } else if (error.name === 'ValidationError') {
+      } else if (error.name === 'CastError') {
         res.status(400)
           .send({ message: 'Проверьте корректность введённых данных' });
       } else {
@@ -91,7 +91,7 @@ module.exports.dislikeCard = (req, res) => {
       if (error.message === 'NotValidId') {
         res.status(404)
           .send({ message: 'Данной карточки не существует' });
-      } else if (error.name === 'ValidationError') {
+      } else if (error.name === 'CastError') {
         res.status(400)
           .send({ message: 'Проверьте корректность введённых данных' });
       } else {
