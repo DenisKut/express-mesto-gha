@@ -57,8 +57,8 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .orFail(new Error('NotValidId'))
     .populate('owner', 'likes')
+    .orFail(new Error('NotValidId'))
     .then((card) => {
       res.status(200).send(card);
     })
