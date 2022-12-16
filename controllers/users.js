@@ -20,8 +20,7 @@ module.exports.getUserById = (req, res) => {
       if (error.message === 'NotValidId') {
         res.status(404)
           .send({ message: 'Данный пользователь не найден' });
-      } else
-      if (error.name === 'CastError') {
+      } else if (error.name === 'CastError') {
         res.status(400)
           .send({ message: 'Проверьте корректность введённых данных' });
       } else {
@@ -55,16 +54,15 @@ module.exports.updateProfileUser = (req, res) => {
     { name, about },
     { new: true, runValidators: true },
   )
+    .orFail(new Error('NotValidId'))
     .then((user) => {
-      if (!user) {
-        res.status(404)
-          .send({ message: 'Данный пользователь не найден' });
-        return;
-      }
-      res.send(user);
+      res.status(200).send(user);
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if (error.message === 'NotValidId') {
+        res.status(404)
+          .send({ message: 'Данный пользователь не найден' });
+      } else if (error.name === 'ValidationError') {
         res.status(400)
           .send({ message: 'Проверьте корректность введённых данных' });
       } else {
@@ -81,16 +79,15 @@ module.exports.updateAvatarUser = (req, res) => {
     { avatar },
     { new: true, runValidators: true },
   )
+    .orFail(new Error('NotValidId'))
     .then((user) => {
-      if (!user) {
-        res.status(404)
-          .send({ message: 'Данный пользователь не найден' });
-        return;
-      }
-      res.send(user);
+      res.status(200).send(user);
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if (error.message === 'NotValidId') {
+        res.status(404)
+          .send({ message: 'Данный пользователь не найден' });
+      } else if (error.name === 'ValidationError') {
         res.status(400)
           .send({ message: 'Проверьте корректность введённых данных' });
       } else {

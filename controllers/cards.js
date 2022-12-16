@@ -33,16 +33,15 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
   Card.findByIdAndDelete(cardId)
+    .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (!card) {
-        res.status(404)
-          .send({ message: 'Данная карточка не найдена' });
-        return;
-      }
-      res.send(card);
+      res.status(200).send(card);
     })
     .catch((error) => {
-      if (error.name === 'CastError') {
+      if (error.message === 'NotValidId') {
+        res.status(404)
+          .send({ message: 'Данной карточки не существует' });
+      } else if (error.name === 'ValidationError') {
         res.status(400)
           .send({ message: 'Проверьте корректность введённых данных' });
       } else {
@@ -59,16 +58,15 @@ module.exports.likeCard = (req, res) => {
     { new: true },
   )
     .populate('owner', 'likes')
+    .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (!card) {
-        res.status(404)
-          .send({ message: 'Данная карточка не найдена' });
-        return;
-      }
-      res.send(card);
+      res.status(200).send(card);
     })
     .catch((error) => {
-      if (error.name === 'CastError') {
+      if (error.message === 'NotValidId') {
+        res.status(404)
+          .send({ message: 'Данной карточки не существует' });
+      } else if (error.name === 'ValidationError') {
         res.status(400)
           .send({ message: 'Проверьте корректность введённых данных' });
       } else {
@@ -85,16 +83,15 @@ module.exports.dislikeCard = (req, res) => {
     { new: true },
   )
     .populate('owner', 'likes')
+    .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (!card) {
-        res.status(404)
-          .send({ message: 'Данная карточка не найдена' });
-        return;
-      }
-      res.send(card);
+      res.status(200).send(card);
     })
     .catch((error) => {
-      if (error.name === 'CastError') {
+      if (error.message === 'NotValidId') {
+        res.status(404)
+          .send({ message: 'Данной карточки не существует' });
+      } else if (error.name === 'ValidationError') {
         res.status(400)
           .send({ message: 'Проверьте корректность введённых данных' });
       } else {
