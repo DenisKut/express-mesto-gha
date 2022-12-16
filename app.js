@@ -9,8 +9,8 @@ const { PORT = 3000 } = process.env;
 const app = express();
 
 const requestLimiter = rateLimit({
-  windowMs: 1000 * 30,
-  max: 36,
+  windowMs: 1000 * 10,
+  max: 50,
   message: 'Слишком много запросов подряд!',
 });
 const wrongPageLimiter = rateLimit({
