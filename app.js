@@ -10,7 +10,7 @@ const app = express();
 
 const requestLimiter = rateLimit({
   windowMs: 1000 * 60,
-  max: 70,
+  max: 75,
   message: 'Слишком много запросов подряд!',
 });
 const wrongPageLimiter = rateLimit({
