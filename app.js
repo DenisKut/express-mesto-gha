@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const { errors } = require('celebrate');
 
-const { NotFound } = require('./errors/NotFound');
+// const NotFoundError = require('./errors/NotFound');
 const { errorHandler } = require('./errors/standartError');
 const users = require('./routes/users');
 const cards = require('./routes/cards');
@@ -20,11 +20,6 @@ const requestLimiter = rateLimit({
   windowMs: 1000 * 60,
   max: 100,
   message: 'Слишком много запросов подряд!',
-});
-const wrongPageLimiter = rateLimit({
-  windowMs: 1000 * 60,
-  max: 2,
-  message: 'Поменяйте наконец адрес!',
 });
 
 const app = express();
@@ -47,12 +42,9 @@ app.use(requestLimiter);
 app.use('/', auth);
 app.use('/users', authorization, users);
 app.use('/cards', authorization, cards);
+
 app.use(errors());
 app.use(errorHandler);
-
-app.all('*', wrongPageLimiter, (req, res, next) => {
-  next(new NotFound('Page Not Found!'));
-});
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
