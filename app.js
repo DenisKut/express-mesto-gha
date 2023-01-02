@@ -15,7 +15,7 @@ const { PORT = 3000, DATA_BASE = 'mongodb://localhost:27017/mestodb' } = process
 
 const requestLimiter = rateLimit({
   windowMs: 1000 * 60,
-  max: 100,
+  max: 1000,
   message: 'Слишком много запросов подряд!',
 });
 
@@ -41,7 +41,7 @@ app.use(router);
 app.use(errors());
 app.use(errorHandler);
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
+mongoose.connect(DATA_BASE, {
   useNewUrlParser: true,
 });
 
