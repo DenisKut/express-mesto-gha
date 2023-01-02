@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const { errors } = require('celebrate');
 
-// const NotFoundError = require('./errors/NotFound');
+const NotFound = require('./errors/NotFound');
 const { errorHandler } = require('./errors/standartError');
 const users = require('./routes/users');
 const cards = require('./routes/cards');
@@ -43,6 +43,9 @@ app.use('/', auth);
 app.use('/users', authorization, users);
 app.use('/cards', authorization, cards);
 
+app.use('*', (req, res, next) => {
+  next(new NotFound('Page Not Found!'));
+});
 app.use(errors());
 app.use(errorHandler);
 
