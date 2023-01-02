@@ -34,7 +34,6 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findById(cardId)
     .orFail(() => next(new NotFound('Данной карточки не существует')))
     .then((card) => {
-      console.log(cardId);
       if (!card.owner.equals(userId)) {
         throw new HaveNotAccessed('Попытка удаления чужой карточки');
       } else {
@@ -49,6 +48,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (error.name === 'CastError') {
         next(new BadRequest('Проверьте корректность введённых данных'));
       } else {
+        res.send(cardId);
         next(error);
       }
     });
