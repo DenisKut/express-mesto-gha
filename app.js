@@ -7,12 +7,9 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const { errors } = require('celebrate');
 
-const NotFound = require('./errors/NotFound');
+const router = require('./routes/routes');
 const { errorHandler } = require('./errors/standartError');
-const users = require('./routes/users');
-const cards = require('./routes/cards');
-const { authorization } = require('./middlewares/auth');
-const auth = require('./routes/auth');
+
 // Слушаем 3000 порт
 const { PORT = 3000, DATA_BASE = 'mongodb://localhost:27017/mestodb' } = process.env;
 
@@ -39,13 +36,7 @@ mongoose.set('strictQuery', true);
 
 app.use(requestLimiter);
 
-app.use('*', (req, res, next) => {
-  next(new NotFound('Page Not Found!'));
-});
-
-app.use('/', auth);
-app.use('/users', authorization, users);
-app.use('/cards', authorization, cards);
+app.use(router);
 
 app.use(errors());
 app.use(errorHandler);
