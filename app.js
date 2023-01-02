@@ -39,13 +39,14 @@ mongoose.set('strictQuery', true);
 
 app.use(requestLimiter);
 
+app.use('*', (req, res, next) => {
+  next(new NotFound('Page Not Found!'));
+});
+
 app.use('/', auth);
 app.use('/users', authorization, users);
 app.use('/cards', authorization, cards);
 
-app.use('*', (req, res, next) => {
-  next(new NotFound('Page Not Found!'));
-});
 app.use(errors());
 app.use(errorHandler);
 
