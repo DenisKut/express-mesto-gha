@@ -18,7 +18,7 @@ const { PORT = 3000, DATA_BASE = 'mongodb://localhost:27017/mestodb' } = process
 
 const requestLimiter = rateLimit({
   windowMs: 1000 * 60,
-  max: 75,
+  max: 100,
   message: 'Слишком много запросов подряд!',
 });
 const wrongPageLimiter = rateLimit({

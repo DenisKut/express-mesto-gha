@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const BadRequest = require('../errors/BadRequest');
-// const Conflict = require('../errors/Conflict');
+const Conflict = require('../errors/Conflict');
 const NotFound = require('../errors/NotFound');
 
 const { NODE_ENV, JWT_SECRET = 'my-personal-key' } = process.env;
@@ -69,7 +69,7 @@ module.exports.createUser = (req, res, next) => {
           if (error.name === 'ValidationError') {
             next(new BadRequest('Проверьте корректность введённых данных'));
           } else if (error.code === 11000) {
-            next(new BadRequest('Пользователь с такой почтой уже зарегестрирован'));
+            next(new Conflict('Пользователь с такой почтой уже зарегестрирован'));
           } else {
             next(error);
           }
