@@ -43,12 +43,11 @@ app.use('/', auth);
 app.use('/users', authorization, users);
 app.use('/cards', authorization, cards);
 
-app.use(errors());
-app.use(errorHandler);
-
 app.use('*', (req, res, next) => {
   next(new NotFound('Page Not Found!'));
 });
+app.use(errors());
+app.use(errorHandler);
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
