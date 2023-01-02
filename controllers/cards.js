@@ -29,27 +29,54 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  const userId = req.user._id;
-  const { cardId } = req.params;
-  Card.findById(cardId)
-    .orFail(() => next(new NotFound('Данной карточки не существует')))
+  Card.findById(req.params.cardId)
+    .orFail(() => {
+      throw new NotFound('Карточка с указанным _id не найдена');
+    })
     .then((card) => {
-      if (!card.owner.equals(userId)) {
-        next(new HaveNotAccessed('Попытка удаления чужой карточки'));
+      const owner = card.owner.toString();
+      if (req.user._id === owner) {
+        Card.deleteOne(card)
+          .then(() => {
+            res.send(card);
+          })
+          .catch(next);
+      } else {
+        throw new HaveNotAccessed('Невозможно удалить карточку');
       }
-      return Card.deleteOne(card)
-        .then(() => res.send({ card }, {
-          message: 'Данная карточка удалена',
-        }));
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        next(new BadRequest('Проверьте корректность введённых данных'));
+        next(new BadRequest('Переданы некорректные данные удаления'));
       } else {
         next(error);
       }
     });
 };
+// module.exports.deleteCard = (req, res, next) => {
+//   const userId = req.user._id;
+//   const { cardId } = req.params;
+//   Card.findById(cardId)
+//     .orFail(() => next(new NotFound('Данной карточки не существует')))
+//     .then((card) => {
+//       if (!card.owner.equals(userId)) {
+//         next(new HaveNotAccessed('Попытка удаления чужой карточки'));
+//       } else {
+//         Card.findByIdAndRemove(cardId)
+//           .then(() => res.send(card, {
+//             message: 'Данная карточка удалена',
+//           }))
+//           .catch(next);
+//       }
+//     })
+//     .catch((error) => {
+//       if (error.name === 'CastError') {
+//         next(new BadRequest('Проверьте корректность введённых данных'));
+//       } else {
+//         next(error);
+//       }
+//     });
+// };
 
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
