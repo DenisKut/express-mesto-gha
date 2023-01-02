@@ -48,7 +48,8 @@ module.exports.deleteCard = (req, res, next) => {
       if (error.name === 'CastError') {
         next(new BadRequest('Проверьте корректность введённых данных'));
       } else {
-        next(error);
+        const newError = new Error(cardId);
+        next(newError);
       }
     });
 };
