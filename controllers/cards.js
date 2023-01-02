@@ -30,14 +30,15 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   const userId = req.user._id;
-  Card.findById(req.params.cardId)
+  const { cardId } = req.params;
+  Card.findById(cardId)
     .orFail(() => next(new NotFound('Данной карточки не существует')))
     .then((card) => {
       if (!card.owner.equals(userId)) {
         throw new HaveNotAccessed('Попытка удаления чужой карточки');
       } else {
-        Card.findByIdAndRemove(req.params.cardId)
-          .then(() => res.send(card, {
+        Card.findByIdAndRemove(cardId)
+          .then((cardData) => res.send(cardData, {
             message: 'Данная карточка удалена',
           }))
           .catch(next);
