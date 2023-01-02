@@ -38,10 +38,9 @@ module.exports.deleteCard = (req, res, next) => {
         next(new HaveNotAccessed('Попытка удаления чужой карточки'));
       }
       return Card.findByIdAndRemove(cardId)
-        .then(() => res.send(card, {
+        .then(() => res.send({ card }, {
           message: 'Данная карточка удалена',
-        }))
-        .catch(next);
+        }));
     })
     .catch((error) => {
       if (error.name === 'CastError') {
