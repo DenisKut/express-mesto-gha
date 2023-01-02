@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -13,7 +14,7 @@ const cards = require('./routes/cards');
 const { authMiddleware } = require('./middlewares/auth');
 const auth = require('./routes/auth');
 // Слушаем 3000 порт
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DATA_BASE = 'mongodb://localhost:27017/mestodb' } = process.env;
 const app = express();
 
 const requestLimiter = rateLimit({
@@ -36,6 +37,8 @@ app.use(helmet.xssFilter());
 app.use(helmet.noSniff());
 app.use(helmet.dnsPrefetchControl());
 
+app.use(cors());
+
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
@@ -52,4 +55,7 @@ app.all('*', wrongPageLimiter, (req, res, next) => {
   next(new NotFound('Page Not Found!'));
 });
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+  console.log(`App connect to dateBase ${DATA_BASE}`);
+});
