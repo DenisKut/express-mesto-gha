@@ -14,7 +14,7 @@ const cards = require('./routes/cards');
 const { authorization } = require('./middlewares/auth');
 const auth = require('./routes/auth');
 // Слушаем 3000 порт
-const { PORT = 30000, DATA_BASE = 'mongodb://localhost:27017/mestodb' } = process.env;
+const { PORT = 3000, DATA_BASE = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const requestLimiter = rateLimit({
   windowMs: 1000 * 60,
