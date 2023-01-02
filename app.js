@@ -39,9 +39,7 @@ app.use(helmet.dnsPrefetchControl());
 
 app.use(cors());
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
-  useNewUrlParser: true,
-});
+mongoose.connect(DATA_BASE);
 
 mongoose.set('strictQuery', true);
 
