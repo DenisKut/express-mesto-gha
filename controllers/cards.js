@@ -30,7 +30,7 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   const userId = req.user._id;
-  const { cardId } = req.params;
+  const { cardId } = req.params.cardId;
   Card.findById(cardId)
     .orFail(() => next(new NotFound('Данной карточки не существует')))
     .then((card) => {
@@ -38,7 +38,7 @@ module.exports.deleteCard = (req, res, next) => {
         throw new HaveNotAccessed('Попытка удаления чужой карточки');
       } else {
         card.delete();
-        res.status(200).send(card, { message: 'Данная карточка удалена' });
+        res.send(card, { message: 'Данная карточка удалена' });
       }
     })
     .catch((error) => {
