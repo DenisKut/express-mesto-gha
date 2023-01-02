@@ -11,11 +11,10 @@ const { NotFound } = require('./errors/NotFound');
 const { errorHandler } = require('./errors/standartError');
 const users = require('./routes/users');
 const cards = require('./routes/cards');
-const { authMiddleware } = require('./middlewares/auth');
+const { authorization } = require('./middlewares/auth');
 const auth = require('./routes/auth');
 // Слушаем 3000 порт
-const { PORT = 3000, DATA_BASE = 'mongodb://localhost:27017/mestodb' } = process.env;
-const app = express();
+const { PORT = 30000, DATA_BASE = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const requestLimiter = rateLimit({
   windowMs: 1000 * 60,
@@ -28,6 +27,8 @@ const wrongPageLimiter = rateLimit({
   message: 'Поменяйте наконец адрес!',
 });
 
+const app = express();
+
 app.use(helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' }));
 app.use(helmet.frameguard({ action: 'sameorigin' }));
 
@@ -39,18 +40,22 @@ app.use(helmet.dnsPrefetchControl());
 
 app.use(cors());
 
-mongoose.connect(DATA_BASE);
-
 mongoose.set('strictQuery', true);
 
+app.use(requestLimiter);
+
 app.use('/', auth);
-app.use('/users', requestLimiter, authMiddleware, users);
-app.use('/cards', requestLimiter, authMiddleware, cards);
+app.use('/users', authorization, users);
+app.use('/cards', authorization, cards);
 app.use(errors());
 app.use(errorHandler);
 
 app.all('*', wrongPageLimiter, (req, res, next) => {
   next(new NotFound('Page Not Found!'));
+});
+
+mongoose.connect('mongodb://localhost:27017/mestodb', {
+  useNewUrlParser: true,
 });
 
 app.listen(PORT, () => {
