@@ -37,7 +37,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (!card.owner.equals(userId)) {
         next(new HaveNotAccessed('Попытка удаления чужой карточки'));
       }
-      return Card.findByIdAndRemove(cardId)
+      return Card.deleteOne(card)
         .then(() => res.send({ card }, {
           message: 'Данная карточка удалена',
         }));
