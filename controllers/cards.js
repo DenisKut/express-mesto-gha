@@ -42,8 +42,8 @@ module.exports.deleteCard = (req, res, next) => {
             message: 'Данная карточка удалена',
           }))
           .catch(() => {
-            const newError = new Error(cardId);
-            next(newError);
+            const newError = new NotFound(cardId);
+            return next(newError);
           });
       }
     })
