@@ -30,12 +30,12 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   const userId = req.user._id;
-  const { cardId } = req.params;
+  const cardId = req.params;
   Card.findById(cardId)
     .orFail(() => next(new NotFound('Данной карточки не существует')))
     .then((card) => {
       if (!card.owner.equals(userId)) {
-        throw new HaveNotAccessed('Попытка удаления чужой карточки');
+        next(new HaveNotAccessed('Попытка удаления чужой карточки'));
       } else {
         Card.findByIdAndRemove(cardId)
           .then(() => res.send(card, {
@@ -48,7 +48,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (error.name === 'CastError') {
         next(new BadRequest('Проверьте корректность введённых данных'));
       } else {
-        next(cardId);
+        next(error);
       }
     });
 };
