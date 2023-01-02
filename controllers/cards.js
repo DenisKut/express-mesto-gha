@@ -37,22 +37,18 @@ module.exports.deleteCard = (req, res, next) => {
       if (!card.owner.equals(userId)) {
         next(new HaveNotAccessed('Попытка удаления чужой карточки'));
       } else {
-        Card.findByIdAndDelete(cardId)
+        Card.findByIdAndRemove(cardId)
           .then(() => res.send(card, {
             message: 'Данная карточка удалена',
           }))
-          .catch(() => {
-            const newError = new NotFound(cardId);
-            return next(newError);
-          });
+          .catch(next);
       }
     })
     .catch((error) => {
       if (error.name === 'CastError') {
         next(new BadRequest('Проверьте корректность введённых данных'));
       } else {
-        const newError = new Error(cardId);
-        next(newError);
+        next(error);
       }
     });
 };
