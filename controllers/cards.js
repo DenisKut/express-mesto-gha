@@ -31,18 +31,20 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .orFail(() => {
-      throw new NotFound('Карточка с указанным _id не найдена');
+      throw new NotFound('Данной карточки не существует');
     })
     .then((card) => {
-      const owner = card.owner.toString();
-      if (req.user._id === owner) {
+      const userId = card.owner.toString();
+      if (req.user._id === userId) {
         Card.deleteOne(card)
           .then(() => {
-            res.send(card);
+            res.send(card, {
+              message: 'Данная карточка удалена',
+            });
           })
           .catch(next);
       } else {
-        throw new HaveNotAccessed('Невозможно удалить карточку');
+        throw new HaveNotAccessed('Попытка удаления чужой карточки');
       }
     })
     .catch((error) => {
