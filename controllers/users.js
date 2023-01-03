@@ -16,7 +16,7 @@ module.exports.getUsers = (req, res, next) => {
 module.exports.getUserById = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
-    .orFail(() => next(new NotFound('Не верно указан id пользователя')))
+    .orFail(new NotFound('Не верно указан id пользователя'))
     .then((user) => {
       res.status(200).send(user);
     })
@@ -32,7 +32,7 @@ module.exports.getUserById = (req, res, next) => {
 module.exports.getUserInfo = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
-    .orFail(() => next(new NotFound('Не верно указан id пользователя')))
+    .orFail(new NotFound('Указан несуществующий id пользователя'))
     .then((user) => {
       res.status(200).send(user);
     })
@@ -47,13 +47,13 @@ module.exports.getUserInfo = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const {
-    name, about, avatar, email, password,
+    password,
   } = req.body;
 
   bcrypt.hash(password, 10)
     .then((hash) => {
       User.create({
-        name, about, avatar, email, password: hash,
+        ...req.body, password: hash,
       })
         .then((user) => {
           res.send({
@@ -84,7 +84,7 @@ module.exports.updateProfileUser = (req, res, next) => {
     { name, about },
     { new: true, runValidators: true },
   )
-    .orFail(() => next(new NotFound('Не верно указан id пользователя')))
+    .orFail(new NotFound('Указан несуществующий id пользователя'))
     .then((user) => {
       res.status(200).send(user);
     })
@@ -104,7 +104,7 @@ module.exports.updateAvatarUser = (req, res, next) => {
     { avatar },
     { new: true, runValidators: true },
   )
-    .orFail(() => next(new NotFound('Не верно указан id пользователя')))
+    .orFail(new NotFound('Указан несуществующий id пользователя'))
     .then((user) => {
       res.status(200).send(user);
     })

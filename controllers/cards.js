@@ -5,7 +5,7 @@ const NotFound = require('../errors/NotFound');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .populate('owner', 'likes')
+    .populate(['owner', 'likes'])
     .then((cards) => res
       .send(cards))
     .catch(next);
@@ -60,7 +60,7 @@ module.exports.deleteCard = (req, res, next) => {
   const userId = req.user._id;
   const { cardId } = req.params;
   Card.findById(cardId)
-    .orFail(() => next(new NotFound('Данной карточки не существует')))
+    .orFail(new NotFound('Данной карточки не существует'))
     .then((card) => {
       if (!card.owner.equals(userId)) {
         next(new HaveNotAccessed('Попытка удаления чужой карточки'));
@@ -86,7 +86,7 @@ module.exports.likeCard = (req, res, next) => {
     { new: true },
   )
     .populate('owner', 'likes')
-    .orFail(() => next(new NotFound('Данной карточки не существует')))
+    .orFail(new NotFound('Данной карточки не существует'))
     .then((card) => {
       res.status(200).send(card);
     })
@@ -106,7 +106,7 @@ module.exports.dislikeCard = (req, res, next) => {
     { new: true },
   )
     .populate('owner', 'likes')
-    .orFail(() => next(new NotFound('Данной карточки не существует')))
+    .orFail(new NotFound('Данной карточки не существует'))
     .then((card) => {
       res.status(200).send(card);
     })
