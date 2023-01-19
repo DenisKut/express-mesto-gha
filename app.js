@@ -7,11 +7,12 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const { errors } = require('celebrate');
 
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes/routes');
 const { errorHandler } = require('./errors/standartError');
 
 // Слушаем 3000 порт
-const { PORT = 3000, DATA_BASE = 'mongodb://localhost:27017/mestodb' } = process.env;
+const { PORT = 3000, DATA_BASE = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 const requestLimiter = rateLimit({
   windowMs: 1000 * 60,
@@ -36,7 +37,9 @@ mongoose.set('strictQuery', true);
 
 app.use(requestLimiter);
 
+app.use(requestLogger);
 app.use(router);
+app.use(errorLogger);
 
 app.use(errors());
 app.use(errorHandler);
