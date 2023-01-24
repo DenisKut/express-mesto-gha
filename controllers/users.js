@@ -127,7 +127,7 @@ module.exports.login = (req, res, next) => {
         { expiresIn: '7d' },
       );
 
-      res.send({ jwtToken });
+      res.send({ token: jwtToken });
     })
     .catch(next);
 };
