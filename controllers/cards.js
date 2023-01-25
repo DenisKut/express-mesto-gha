@@ -85,7 +85,7 @@ module.exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .populate('owner', 'likes')
+    .populate(['owner', 'likes'])
     .orFail(new NotFound('Данной карточки не существует'))
     .then((card) => {
       res.status(200).send(card);
@@ -105,7 +105,7 @@ module.exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
-    .populate('owner', 'likes')
+    .populate(['owner', 'likes'])
     .orFail(new NotFound('Данной карточки не существует'))
     .then((card) => {
       res.status(200).send(card);
